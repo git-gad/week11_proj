@@ -1,7 +1,6 @@
 from models import ContactCreate
 import os
 import time
-from mysql.connector import connect, Error
 from pymongo import MongoClient
 
 def get_db():
@@ -15,45 +14,28 @@ def get_db():
     return client[db_name]
 
 class DAL:
-    @staticmethod
-    def get_all():
-        
-        return rows
+    db = get_db()
+    contact_collection = db['contacts'] if db is not None else None
+    
+    @classmethod
+    def get_all(cls):
+        contacts = cls.contact_collection.find()
+        return list(contacts)
 
-    @staticmethod
-    def create_contact(contact: ContactCreate):
-        conn = get_connection()
-        cursor = conn.cursor()
-        query = '''INSERT INTO contacts (first_name, last_name, phone_number) 
-                VALUES (%s, %s, %s)'''
-        data = (contact.first_name, contact.last_name, contact.phone_number)
-        cursor.execute(query, data)
-        id = cursor.lastrowid
-        conn.commit()
-        cursor.close()
-        conn.close()
-        return id  
+    @classmethod
+    def create_contact(cls, contact: ContactCreate):
+        result = cls.contact_collection.update_one(contact.model_dump())
+        return result.upserted_id
      
-    @staticmethod    
-    def update_contact(id: int, updated_contact: ContactCreate):
-        conn = get_connection()
-        cursor = conn.cursor()
-        query = '''UPDATE contacts 
-                SET first_name = %s, last_name = %s, phone_number = %s
-                WHERE id = %s'''
-        data = (updated_contact.first_name, updated_contact.last_name, updated_contact.phone_number, id)
-        cursor.execute(query, data)
-        conn.commit()
-        cursor.close()
-        conn.close()
+    @classmethod    
+    def update_contact(cls, id: int, updated_contact: ContactCreate):
+        result = cls.contact_collection.replace_one(
+            {'_id': id},
+            updated_contact.model_dump
+        )
       
-    @staticmethod   
-    def del_contact(id: int):
-        conn = get_connection()
-        cursor = conn.cursor()
-        query = '''DELETE FROM contacts 
-                WHERE id = %s'''
-        cursor.execute(query, (id,))
-        conn.commit()
-        cursor.close()
-        conn.close()
+    @classmethod   
+    def del_contact(cls, id: int):
+        result = cls.contact_collection.delete_one(
+            {'_id': id}
+        )
