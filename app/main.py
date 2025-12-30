@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import uvicorn
 from routers import contacts
 
+
 app = FastAPI()
 
 app.include_router(contacts.router, prefix='/contacts', tags=['Contacts'])
