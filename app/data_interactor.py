@@ -2,38 +2,22 @@ from models import ContactCreate
 import os
 import time
 from mysql.connector import connect, Error
+from pymongo import MongoClient
 
-def get_connection(retries=30, delay=1):
-    host = os.getenv("DB_HOST", "db")
-    user = os.getenv("DB_USER", "app_user")
-    password = os.getenv("DB_PASS", "app_pass")
-    port = int(os.getenv("DB_PORT", 3306))
-    database = os.getenv("DB_NAME", "app_db")
+def get_db():
+    user = os.getenv('MONGO_USER')
+    password = os.getenv('MONGO_PASSWORD')
+    host = os.getenv('MONGO_HOST')
+    db_name = os.getenv('MONGO_DB')
 
-    for i in range(retries):
-        try:
-            return connect(
-                host=host,
-                user=user,
-                password=password,
-                port=port,
-                database=database
-            )
-        except Error as e:
-            print(f"MySQL not ready ({i+1}/{retries}): {e}")
-            time.sleep(delay)
-
-    raise RuntimeError("MySQL not available")
+    uri = f'mongodb://{user}:{password}@{host}:27017'
+    client = MongoClient(uri)
+    return client[db_name]
 
 class DAL:
     @staticmethod
     def get_all():
-        conn = get_connection()
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM contacts')
-        rows = cursor.fetchall()
-        cursor.close()
-        conn.close()
+        
         return rows
 
     @staticmethod
