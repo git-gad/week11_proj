@@ -12,8 +12,8 @@ def get_all_contacts(db=Depends(DB_Connection.get_db)):
 
 @router.post('/')
 def add_contact(contact: Contact, db=Depends(DB_Connection.get_db)):
-    id = dal.create_contact(db, contact)
-    return {'message': 'success', 'id': id}
+    contact_id = dal.create_contact(db, contact)
+    return {'message': 'success', 'id': contact_id}
 
 @router.put('/{id}')
 def change_contact(id, updated_contact: Contact, db=Depends(DB_Connection.get_db)):

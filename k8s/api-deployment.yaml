@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: fastapi
-          image: gaddock/week11_proj:mongo-fastapi 
+          image: gaddock/week11_proj:v1.7
           ports:
             - containerPort: 8000
           env:

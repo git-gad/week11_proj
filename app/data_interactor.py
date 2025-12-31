@@ -6,9 +6,9 @@ from bson import ObjectId
 
 load_dotenv()
 
-host = os.getenv('MONGO_HOST')
-db_name = os.getenv('MONGO_DB')
-URI = f'mongodb://{host}:27017'
+host = os.getenv('MONGO_HOST', 'mongo-noauth')  
+db_name = os.getenv('MONGO_DB', 'testdb')
+
 CONTACTS_COLL = "contacts"
 
 class DB_Connection:
@@ -17,11 +17,12 @@ class DB_Connection:
     @classmethod
     def connect_client(cls):
         if cls.client is None:
-            cls.client = MongoClient(URI)
+            cls.client = MongoClient(f"mongodb://{host}:27017/")
             cls.client.admin.command("ping")
-            print("Established mongodb connection")    
+            print("Established mongodb connection") 
+            print("MONGO URI >>>", f"mongodb://{host}:27017/")
         return cls.client
-    
+
     @classmethod
     def get_db(cls):
         if cls.client is None:
@@ -31,10 +32,10 @@ class DB_Connection:
 class DAL:
     @classmethod
     def get_all(cls, db):
-        docs = list(db[CONTACTS_COLL].find())
-        for d in docs:
-            d["_id"] = str(d["_id"])
-        return docs
+        contacts = list(db[CONTACTS_COLL].find())
+        for contact in contacts:
+            contact["_id"] = str(contact["_id"])
+        return contacts
 
     @classmethod
     def create_contact(cls, db, contact: Contact):
