@@ -1,10 +1,8 @@
-from models import ContactCreate
+from models import Contact
 import os
-import time
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from bson import json_util, ObjectId
-import json
+from bson import ObjectId
 
 load_dotenv()
 
@@ -33,19 +31,19 @@ class DB_Connection:
 class DAL:
     @classmethod
     def get_all(cls, db):
-        contacts = db[CONTACTS_COLL].find()
-        response = contacts
-        response = json.loads(json_util.dumps(response))
-        return response
+        docs = list(db[CONTACTS_COLL].find())
+        for d in docs:
+            d["_id"] = str(d["_id"])
+        return docs
 
     @classmethod
-    def create_contact(cls, db, contact: ContactCreate):
+    def create_contact(cls, db, contact: Contact):
         contact = contact.model_dump()
         result = db[CONTACTS_COLL].insert_one(contact)    
         return str(result.inserted_id)
      
     @classmethod    
-    def update_contact(cls, db, id: str, updated_contact: ContactCreate):
+    def update_contact(cls, db, id, updated_contact: Contact):
         updated_contact = updated_contact.model_dump()
         result = db[CONTACTS_COLL].replace_one(
             {'_id': ObjectId(id)},
@@ -53,7 +51,7 @@ class DAL:
         )
       
     @classmethod   
-    def del_contact(cls, db, id: str):
+    def del_contact(cls, db, id):
         result = db[CONTACTS_COLL].delete_one(
             {'_id': ObjectId(id)}
         )

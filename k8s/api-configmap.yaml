@@ -4,4 +4,4 @@ metadata:
   name: api-configmap
 data:
   MONGO_HOST: mongo
-  MONGO_DB: appdb
+  MONGO_DB: contacts_db
