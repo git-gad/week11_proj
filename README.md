@@ -1,37 +1,29 @@
-# week10_project
-gad vineblat
-342743846
-arava
-# Contact Manager API
+# FastAPI + MongoDB (Kubernetes)
 
-A small backend project built with **FastAPI** and **MySQL**, fully containerized using **Docker Compose**.  
-The API allows managing contacts (name and phone number) with full CRUD functionality.
+## gad vineblat
+## 342743846
+## arava
 
-This project is intended for learning and practicing:
-- FastAPI
-- MySQL
-- Docker & Docker Compose
-- Database initialization with `init.sql`
+## 🧰 Tech Stack
 
----
-
-## 🚀 Features
-
-- Create a contact
-- Retrieve all contacts
-- Update a contact
-- Delete a contact
-- Automatic database and table creation on first startup
+- Python 3.11  
+- FastAPI  
+- Uvicorn  
+- MongoDB 7  
+- PyMongo  
+- Docker  
+- Kubernetes (Minikube)
 
 ---
 
-## 🧱 Tech Stack
+## ✅ Features
 
-- **Python 3.11**
-- **FastAPI**
-- **MySQL 8**
-- **Docker**
-- **Docker Compose**
+- RESTful CRUD API
+- MongoDB integration
+- Kubernetes Deployments and Services
+- ConfigMaps for application configuration
+- Secrets for sensitive data
+- Swagger (OpenAPI) documentation
+- Internal service-to-service communication
 
 ---
-# week11_proj
